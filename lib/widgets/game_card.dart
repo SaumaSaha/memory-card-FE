@@ -20,7 +20,7 @@ class GameCard extends StatelessWidget {
       child: Card(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            double paddingValue = constraints.maxWidth < 200 ? 30 : 50;
+            double paddingValue = constraints.maxWidth < 160 ? 20 : 50;
             return card.isFlipped
                 ? Padding(
                     padding: EdgeInsets.all(paddingValue),
