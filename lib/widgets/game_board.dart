@@ -1,10 +1,10 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:memory_card_front_end/utils/device.dart';
 import '../cubit/game_cubit.dart';
+import 'game_card.dart';
+import 'game_info.dart';
 
 class GameBoard extends StatefulWidget {
   const GameBoard({super.key});
@@ -82,69 +82,45 @@ class _GameBoardState extends State<GameBoard> {
           }
 
           double boardSize = Device.isMobile(context)
-              ? MediaQuery.of(context).size.width * 0.8
-              : MediaQuery.of(context).size.width * 0.5;
-          return Column(
-            children: [
-              Expanded(
-                child: Center(
-                  child: SizedBox(
-                    width: boardSize,
-                    height: boardSize,
-                    child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        childAspectRatio: 0.8,
+              ? Device.width(context) * 0.8
+              : Device.width(context) * 0.5;
+
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.blueGrey.shade900, Colors.black],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: SizedBox(
+                      width: boardSize,
+                      height: boardSize,
+                      child: GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          childAspectRatio: 0.8,
+                        ),
+                        itemCount: state.cards.length,
+                        itemBuilder: (context, index) {
+                          return GameCard(
+                            card: state.cards[index],
+                            onTap: () =>
+                                context.read<GameCubit>().flipCard(index),
+                          );
+                        },
                       ),
-                      itemCount: state.cards.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () =>
-                              context.read<GameCubit>().flipCard(index),
-                          child: Card(
-                            child: state.cards[index].isFlipped
-                                ? Padding(
-                                    padding: EdgeInsets.all(
-                                        Device.isMobile(context)
-                                            ? 10
-                                            : 50),
-                                    child: SvgPicture.asset(
-                                      state.cards[index].svgPath,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  )
-                                : Container(color: Colors.blue),
-                          ),
-                        );
-                      },
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 10.0,
-                        bottom: 20.0,
-                      ),
-                      child: Text('Time: ${state.time}s'),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        right: 10.0,
-                        bottom: 20.0,
-                      ),
-                      child: Text('Flips: ${state.flips}'),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                GameInfo(time: state.time, flips: state.flips),
+              ],
+            ),
           );
         },
       ),
