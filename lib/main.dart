@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'cubit/game_cubit.dart';
-import 'widgets/game_board.dart';
+import 'features/game/cubit/game_cubit.dart';
+import 'features/game/widgets/game_board.dart';
 
 void main() {
   runApp(const MyApp());
